@@ -1,14 +1,15 @@
 {
 	"info": {
 		"_postman_id": "ed88e15a-0000-40f0-b18f-bfaf3c925b0e",
-		"name": "QA Enviorment",
+		"name": "Nackademin App QA Enviorment",
+		"description": "I have done api test here with JavaScript based on the requirements from my product owner\n\nGiven I am an authenticated user​  \nWhen I log in into the application​  \nThen I should see all my products\n\n  \nGiven I am an admin user​  \nWhen I add a product to the catalog​  \nThen The product is available to be used in the app",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
 		"_exporter_id": "32096461",
-		"_collection_link": "https://backend-and-frontend-in-api-testing.postman.co/workspace/31977f18-671d-4103-be21-9e550bc90e31/collection/32096461-ed88e15a-0000-40f0-b18f-bfaf3c925b0e?action=share&source=collection_link&creator=32096461"
+		"_collection_link": "https://backend-and-frontend-in-api-testing.postman.co/workspace/Kvalit24-Nackademin-~31977f18-671d-4103-be21-9e550bc90e31/collection/32096461-ed88e15a-0000-40f0-b18f-bfaf3c925b0e?action=share&source=collection_link&creator=32096461"
 	},
 	"item": [
 		{
-			"name": "Given I am an authenticated user​",
+			"name": "signup",
 			"event": [
 				{
 					"listen": "prerequest",
@@ -64,6 +65,9 @@
 				}
 			],
 			"request": {
+				"auth": {
+					"type": "noauth"
+				},
 				"method": "POST",
 				"header": [],
 				"body": {
@@ -88,7 +92,7 @@
 			"response": []
 		},
 		{
-			"name": "When i login to the application",
+			"name": "login",
 			"event": [
 				{
 					"listen": "prerequest",
@@ -107,9 +111,37 @@
 					"listen": "test",
 					"script": {
 						"exec": [
-							"pm.test(\"Response status code is not 401\", function () {",
-							"    pm.expect(pm.response.code).equal(200);",
+							"(\"\", function () {",
+							"    ;",
 							"});",
+							"",
+							"",
+							"",
+							"",
+							"",
+							"",
+							"",
+							"",
+							"",
+							"",
+							"",
+							"",
+							"",
+							"",
+							"",
+							"",
+							"",
+							"",
+							"",
+							"",
+							"",
+							"",
+							"",
+							"",
+							"",
+							"",
+							"",
+							"",
 							"",
 							"pm.test(\"Response status code is 200\", function () {",
 							"    pm.expect(pm.response.code).not.equal(401);",
@@ -122,7 +154,21 @@
 							"",
 							"pm.test(\"Response body is not empty\", function () {",
 							"    pm.expect(pm.response.text()).to.not.be.empty;",
-							"});"
+							"});",
+							"",
+							"pm.test",
+							"pm.test(\"Access token is present in the response\", function () {",
+							"    const json = pm.response.json();",
+							"    pm.expect(json.access_token).to.exist;",
+							"    pm.expect(json.access_token).to.be.a('string');",
+							"});",
+							"",
+							"pm.test(\"Token type is present and correct\", function () {",
+							"    const json = pm.response.json();",
+							"    pm.expect(json.token_type).to.exist;",
+							"    pm.expect(json.token_type).to.equal('bearer');",
+							"});",
+							""
 						],
 						"type": "text/javascript",
 						"packages": {}
@@ -154,7 +200,7 @@
 			"response": []
 		},
 		{
-			"name": "Then I should see all my products",
+			"name": "get User with their products",
 			"event": [
 				{
 					"listen": "test",
@@ -211,7 +257,7 @@
 			"response": []
 		},
 		{
-			"name": "Given I am admin user",
+			"name": "login",
 			"event": [
 				{
 					"listen": "prerequest",
@@ -273,7 +319,7 @@
 			"response": []
 		},
 		{
-			"name": "When I add a product to the catalog​",
+			"name": "add product",
 			"event": [
 				{
 					"listen": "prerequest",
@@ -290,21 +336,25 @@
 					"listen": "test",
 					"script": {
 						"exec": [
-							"pm.test(\"Response status code is 200\", function () {",
-							"    pm.expect(pm.response.code).not.to.equal(401);",
+							"pm.test(\"Status code is 200\", function () {",
+							"    pm.expect(pm.response.code).to.equal(200);",
 							"});",
 							"",
-							"pm.test(\"Response status code is not 400\", function () {",
-							"    pm.expect(pm.response.code).not.equal(400);",
+							"// validate that my products name is added correct in the database ",
+							"",
+							"pm.test(\"Check if 'name' is 'Cola'\", function () {",
+							"    var responseJson = pm.response.json();  // Parse the response body",
+							"    pm.expect(responseJson.name).to.equal(\"Cola\");  // Assert that 'name' is 'Cola'",
 							"});",
 							"",
-							"pm.test(\"Check if 'productid' is an integer\", function () {",
+							"pm.test(\"Check if 'id' is an integer\", function () {",
 							"    var responseJson = pm.response.json();  // Parse the response body",
 							"    var id = responseJson.id;  // Extract the 'id' field from the response",
 							"    ",
 							"    pm.expect(id).to.be.a('number');  // Assert that 'id' is a number",
 							"    pm.expect(Number.isInteger(id)).to.be.true;  // Assert that 'id' is an integer",
-							"});"
+							"});",
+							""
 						],
 						"type": "text/javascript",
 						"packages": {}
@@ -346,7 +396,7 @@
 			"response": []
 		},
 		{
-			"name": "Then The product is available to be used in the app",
+			"name": "product list",
 			"event": [
 				{
 					"listen": "prerequest",
@@ -370,6 +420,21 @@
 							"    pm.expect(list.length).not.to.eql(0);",
 							"});",
 							"",
+							"// validate that my product Cola is in the product list ",
+							"",
+							"pm.test(\"Check if 'Cola' is in the product list\", function () {",
+							"    const responseJson = pm.response.json();",
+							"    const productNames = responseJson.map(product => product.name);",
+							"    pm.expect(productNames).to.include('Cola');",
+							"});",
+							"",
+							"// validate that a product is not in the product list that i haven`t added ",
+							"",
+							"pm.test(\"Check if 'Cola' is in the product list\", function () {",
+							"    const responseJson = pm.response.json();",
+							"    const productNames = responseJson.map(product => product.name);",
+							"    pm.expect(productNames).not.to.include('Marabou');",
+							"});",
 							"",
 							"// Validate that the status code is 200",
 							"pm.test(\"Status code is 200\", function () {",
