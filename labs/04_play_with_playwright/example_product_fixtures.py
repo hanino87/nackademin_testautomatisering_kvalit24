@@ -20,10 +20,11 @@ def test_has_title_fixtures():
 
         # Navigate
         page.goto("https://playwright.dev/")
-
         # Assertion
         expect(page).to_have_title(re.compile("Playwright"))
+        
 
         # Cleanup
         context.close()
         browser.close()
+        
