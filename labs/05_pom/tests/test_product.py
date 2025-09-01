@@ -2,6 +2,7 @@ from playwright.sync_api import Page, expect
 
 from models.home import HomePage
 from models.login import LoginPage
+from models.signup import SignupPage 
 
 
 def test_add_product_to_catalog(page: Page):
