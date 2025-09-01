@@ -13,7 +13,7 @@ from playwright.sync_api import sync_playwright, Page, expect
 APP_URL = 'http://localhost:5173'
 
 
-def test_create_new_user_and_add_and_delete_a_product ():
+def test_create_new_user_and_add_and_delete_a_product():
     """
     Full end-to-end test with Playwright:
     1. Open the app
@@ -21,6 +21,8 @@ def test_create_new_user_and_add_and_delete_a_product ():
     3. Log in with the user
     4. Create a product
     5. Verify that the product appears in the list
+    6. Delete the product
+    7. Verify deletion
     """
 
     username = "testuserhannes"
@@ -33,7 +35,7 @@ def test_create_new_user_and_add_and_delete_a_product ():
         dialog.accept()
 
     with sync_playwright() as p:
-        browser = p.chromium.launch(headless=False)  # Set True to run headless
+        browser = p.chromium.launch(headless=False)
         context = browser.new_context()
         page: Page = context.new_page()
 
@@ -41,82 +43,69 @@ def test_create_new_user_and_add_and_delete_a_product ():
         page.goto(APP_URL)
 
         # --- Step 2: Navigate to signup ---
-        page.click("#signup")
+        signup_nav_button = page.locator("#signup")  # ID locator
+        signup_nav_button.click()
 
         # --- Step 3: Fill in signup form ---
-        page.fill('input[placeholder="Username"]', username)
-        page.fill('input[placeholder="Password"]', password)
+        signup_username_input = page.locator('//input[@placeholder="Username"]')  # XPath locator
+        signup_password_input = page.locator('//input[@placeholder="Password"]')  # XPath locator
+        signup_username_input.fill(username)
+        signup_password_input.fill(password)
 
-        # Attach dialog handler before clicking Sign Up
+        signup_submit_button = page.locator('.button-primary')  # class selector
+
         page.once("dialog", handle_dialog)
-        page.click('button:has-text("Sign Up")')
+        signup_submit_button.click()
 
         # --- Step 4: Log in ---
-        page.click('button:has-text("Login")')
-        page.fill('input[placeholder="Username"]', username)
-        page.fill('input[placeholder="Password"]', password)
+        login_nav_button = page.locator('.btn-blue')  # class selector
+        login_nav_button.click()
 
-        login_btn = page.locator('button:has-text("Login")')
-        expect(login_btn).to_be_enabled()
-        expect(login_btn).to_be_visible()
-        login_btn.click()
+        login_username_input = page.locator('//input[@placeholder="Username"]')  # XPath locator
+        login_password_input = page.locator('//input[@placeholder="Password"]')  # XPath locator
+        login_username_input.fill(username)
+        login_password_input.fill(password)
+
+        login_submit_button = page.locator('button:has-text("Login")')  # text selector
+        expect(login_submit_button).to_be_enabled()
+        expect(login_submit_button).to_be_visible()
+        login_submit_button.click()
 
         # --- Step 5: Create a product ---
-        product_input = page.locator('input[placeholder="Product Name"]')
-        expect(product_input).to_be_visible()
-        product_input.fill(product)
+        product_name_input = page.locator('input[placeholder="Product Name"]')  # CSS attribute selector
+        expect(product_name_input).to_be_visible()
+        product_name_input.fill(product)
 
-        add_product_btn = page.locator('button:has-text("Create Product")')
-        expect(add_product_btn).to_be_visible()
-        add_product_btn.click()
+        create_product_button = page.locator('button:has-text("Create Product")')  # text selector
+        expect(create_product_button).to_be_visible()
+        expect(create_product_button).not_to_be_hidden()
+        create_product_button.click()
 
         # --- Step 6: Verify the product appears in the list ---
-        product_list = page.locator(".product-grid")
-        expect(product_list).to_be_visible()
-
-        # Check that the product text appears, and a non-existing product does not
-        expect(product_list).to_have_text(re.compile(product))
-        expect(product_list).not_to_have_text(re.compile(non_existing_product))
+        product_list_container = page.locator(".product-grid")  # class selector
+        expect(product_list_container).to_be_visible()
+        expect(product_list_container).to_have_text(re.compile(product))
+        expect(product_list_container).not_to_have_text(re.compile(non_existing_product))
 
         print("✅ Product added successfully!")
 
-        # Optional pause for debugging / visual check
-        page.wait_for_timeout(5000)
+        page.wait_for_timeout(5000)  # optional pause
 
-        # --- Step 7: (TODO) Delete product ---
-        # You can add a click on the delete button and then:
-        # expect(product_list).not_to_have_text(re.compile(product))
+        # --- Step 7: Delete the product ---
+        first_product_item = product_list_container.locator(".product-item").first  # class selector within container
+        delete_product_button = first_product_item.locator(".product-item-button")  # class selector within product item
+        delete_product_button.click()
 
-        # Delete the first (or only) product item
-        delete_btn_first_item = page.locator(".product-item-button").first
-        delete_btn_first_item.click()
+        print("✅ Product deleted successfully!")
 
-        # Verify that no element with the product name exists anymore
-        expect(page.locator(f".product-grid >> text='{product}'")).to_have_count(0)
-
-        
-        
-        
-        
-        
-        """ 
-        .product-grid
-        This selects the container that holds all the product items.
-        Think of it as the parent <div> or <ul> that wraps each product.
-        >> text='Bajen Halsduk'
-        This is Playwright locator chaining.
-        It searches inside .product-grid for an element containing the exact text "Bajen Halsduk".
-        For example, it could match <span>Bajen Halsduk</span>.
-        .locator("..")
-        In CSS, ".." refers to the parent element.
-        Playwright supports this: after finding the element with the text, locator("..") moves up to its parent container.
-        Usually, the delete button is a sibling of the text, so moving up allows you to scope the delete button correctly within the same product item.
-        
-        """
+        # --- Step 8: Verify deletion ---
+        deleted_product_locator = page.locator(f".product-grid >> text='{product}'")  # chained class + text locator
+        expect(deleted_product_locator).to_have_count(0)
 
         # --- Teardown ---
         context.close()
         browser.close()
+
 
 
 # ### Selenium Code Below 
