@@ -47,15 +47,12 @@ def test_create_new_user_and_add_and_delete_a_product():
         signup_nav_button.click()
 
         # --- Step 3: Fill in signup form ---
-        signup_username_input = page.locator(
-            '//input[@placeholder="Username"]')  # XPath locator
-        signup_password_input = page.locator(
-            '//input[@placeholder="Password"]')  # XPath locator
+        signup_username_input = page.locator( '//input[@placeholder="Username"]')  # XPath locator
+        signup_password_input = page.locator('//input[@placeholder="Password"]')  # XPath locator
         signup_username_input.fill(username)
         signup_password_input.fill(password)
 
-        signup_submit_button = page.locator(
-            '.button-primary')  # class selector
+        signup_submit_button = page.locator('.button-primary')  # class selector
 
         page.once("dialog", handle_dialog)
         signup_submit_button.click()
@@ -64,38 +61,31 @@ def test_create_new_user_and_add_and_delete_a_product():
         login_nav_button = page.locator('.btn-blue')  # class selector
         login_nav_button.click()
 
-        login_username_input = page.locator(
-            '//input[@placeholder="Username"]')  # XPath locator
-        login_password_input = page.locator(
-            '//input[@placeholder="Password"]')  # XPath locator
+        login_username_input = page.locator('//input[@placeholder="Username"]')  # XPath locator
+        login_password_input = page.locator('//input[@placeholder="Password"]')  # XPath locator
         login_username_input.fill(username)
         login_password_input.fill(password)
 
-        login_submit_button = page.locator(
-            'button:has-text("Login")')  # text selector
+        login_submit_button = page.locator('button:has-text("Login")')  # text selector
         expect(login_submit_button).to_be_enabled()
         expect(login_submit_button).to_be_visible()
         login_submit_button.click()
 
         # --- Step 5: Create a product ---
-        product_name_input = page.locator(
-            'input[placeholder="Product Name"]')  # CSS attribute selector
+        product_name_input = page.locator('input[placeholder="Product Name"]')  # CSS attribute selector
         expect(product_name_input).to_be_visible()
         product_name_input.fill(product)
 
-        create_product_button = page.locator(
-            'button:has-text("Create Product")')  # text selector
+        create_product_button = page.locator('button:has-text("Create Product")')  # text selector
         expect(create_product_button).to_be_visible()
         expect(create_product_button).not_to_be_hidden()
         create_product_button.click()
 
         # --- Step 6: Verify the product appears in the list ---
-        product_list_container = page.locator(
-            ".product-grid")  # class selector
+        product_list_container = page.locator( ".product-grid")  # class selector
         expect(product_list_container).to_be_visible()
         expect(product_list_container).to_have_text(re.compile(product))
-        expect(product_list_container).not_to_have_text(
-            re.compile(non_existing_product))
+        expect(product_list_container).not_to_have_text(re.compile(non_existing_product))
 
         print("✅ Product added successfully!")
 
@@ -112,6 +102,7 @@ def test_create_new_user_and_add_and_delete_a_product():
         print(f"✅ Last product named '{product}' deleted successfully!")
 
         # --- Step 8: Verify deletion ---
+        # Verify last product is gone 
         expect(product_items).to_have_count(count_before - 1)
 
        
