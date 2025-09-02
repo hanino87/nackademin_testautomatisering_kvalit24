@@ -4,64 +4,53 @@ class HomePage:
         self.page = page
         # Semantic locators (resilient against CSS/class changes)
         self.product_name_input = page.get_by_placeholder("Product Name")
-        self.create_product_btn = page.get_by_role("button", name="Create Product")
+        self.create_product_btn = page.get_by_role(
+            "button", name="Create Product")
         self.product_lists = page.locator(".product-grid")
-        self.logout_btn= page.get_by_role("button", name="Logout")
+        self.logout_btn = page.get_by_role("button", name="Logout")
+        self.empty_product_message = page.get_by_text("No products available.")
 
     # --- Page Actions ---
     def navigate(self):
         """Go to the homepage"""
         self.page.goto("http://localhost:5173/")
 
-    def add_product(self,product_titel:str):
-        "Metod for create a product and fill " 
+    def add_product(self, product_titel: str):
+        "Metod for create a product and fill in product name"
+        self.product_name_input.wait_for(state="visible")
         self.product_name_input.fill(product_titel)
         self.create_product_btn.click()
-    
-    def delete_product_by_name(self,product_title:str):
-        "Metod for deleting product by name"
-        # Find the product in the product grid
-        product_item_in_product_list_by_name = self.product_lists.locator(f"text={product_title}")
-        # Assign the button here and not in init beacuase its dynamic element not static element 
-        del_btn=product_item_in_product_list_by_name.get_by_role("button", name="Delete")
-        del_btn.click()
-    
-    def delete_product_by_name_for_product_with_duplicate_name(self, product_title: str):
-         """Method for deleting all products by name, even if duplicates exist"""
-    
-        # Get all product items containing the given title
-         matching_products = self.product_lists.locator(f"text={product_title}")
-    
-        # Count how many matches exist
-         count = matching_products.count()
-    
-        # Loop from last to first to avoid skipping items when dom structure updates that why we used reversed risk that it skips element if you go forward 
-         for i in reversed(range(count)): # count like index 2 1 0 for reversed 
-           product = matching_products.nth(i)  # store the specific product element
-           delete_btn = product.get_by_role("button", name="Delete")  # find delete button inside that product that you assign to variable above 
-           delete_btn.click() # No self in front of delete_btn beacuse that element is dynamic and oustside init metod 
-           
+
+    def delete_product_by_name(self, product_title: str):
+        """Delete the last occurrence of a product by name"""
+
+        # Find all products matching the name
+        products = self.product_lists.locator(
+            f".product-item:has-text('{product_title}')")
+
+        # Check if any exist
+        if products.count() == 0:
+            return  # Nothing to delete
+
+        # Get the last product
+        last_product = products.last
+
+        # Wait for it to be visible
+        last_product.wait_for(state="visible")
+
+        # Find the Delete button inside the last product
+        delete_button = last_product.locator(".product-item-button")
+        delete_button.wait_for(state="visible")
+
+        # Click to delete
+        delete_button.click()
+
+        # Short pause to let DOM update
+        self.page.wait_for_timeout(200)
+    # models/home.py
 
     def logout_from_store(self):
         self.logout_btn.click()
-        
-         
-        
-        
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
     def create_product(self, name: str):
         """Create a new product and return locator of the last added product"""

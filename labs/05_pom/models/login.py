@@ -17,6 +17,7 @@ class LoginPage:
 
     def login_with_user_that_exist_in_database(self, username: str, password: str):
         """Log in as an existing user"""
+        self.login_input_username.wait_for(state="visible")
         self.login_input_username.fill(username)
         self.login_input_password.fill(password)
         self.btn_login.click()
