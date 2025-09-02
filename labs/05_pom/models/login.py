@@ -1,42 +1,30 @@
-# Implement PO for login
-# 2 inputs and 1 button
-# Naming example:  input_username
-
 class LoginPage:
-    
-# -- Locators on LoginPage without Semantic Style with CSS & XPath Style  -- # 
+    # --- Locators on LoginPage with Semantic Style ---
     def __init__(self, page):
         self.page = page
-        self.login_input_username = page.locator(('//input[@placeholder="Username"]'))
-        self.login_input_password = page.locator(('//input[@placeholder="Password "]'))
-        self.button_login = page.locator('.button-primary')
-        self.button_signup = page.locator("#signup")
-
-
-# -- Locators on LoginPage with Semantic Style -- #
-
-    def __init__(self, page):
-        self.page = page
-        # replaces //input[@placeholder="Username"]
+        # Semantic locators (robust against style/DOM changes)
         self.login_input_username = page.get_by_placeholder("Username")
-        # replaces //input[@placeholder="Password "]
         self.login_input_password = page.get_by_placeholder("Password")
-        # replaces .button-primary (assuming the button text is "Login")
-        self.button_login = page.get_by_role("button", name="Login")
-        # replaces #signup
-        self.button_signup = page.get_by_role("link", name="Sign Up")  # if it's a link
-        # OR
-        # self.button_signup = page.get_by_role("button", name="Sign Up")  # if it's a button
+        self.btn_login = page.get_by_role("button", name="Login")
+        self.btn_signup = page.get_by_role("link", name="Sign Up")  
+        # If "Sign Up" is actually a button in your app:
+        # self.button_signup = page.get_by_role("button", name="Sign Up")
 
-# -- Actions on LoginPage -- # 
+    # --- Actions on LoginPage ---
     def navigate_to_signup(self):
-        self.button_signup.click()
-    
-    
-    # Login a registered user 
-    def register_user(self, username: str, password: str):
-        self.login_input_password.fill(password)
-        self.login_input_username.fill(username)
-        self.button_login.click()
+        """Click the Sign Up button/link to navigate to signup page"""
+        self.btn_signup.click()
 
+    def login_with_user(self, username: str, password: str):
+        """Log in as an existing user"""
+        self.login_input_username.fill(username)
+        self.login_input_password.fill(password)
+        self.btn_login.click()
     
+    def login_with_no_user(self, bad_username: str, bad_password: str):
+        """Log in as an non existing user"""
+        self.login_input_username.fill(bad_username)
+        self.login_input_password.fill(bad_password)
+        self.btn_login.click()
+    
+

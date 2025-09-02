@@ -1,5 +1,4 @@
 from playwright.sync_api import Page, expect
-
 from models.home import HomePage
 from models.login import LoginPage
 from models.signup import SignupPage 
@@ -10,8 +9,13 @@ def test_add_product_to_catalog(page: Page):
     #PO usage example
     home_page = HomePage(page)
     login_page = LoginPage(page)
+    
+    
+    # import metod from the class on each page Class 
+    
     home_page.navigate()
     login_page.navigate_to_signup()
+    
 
 
     # Given I am an admin user​
