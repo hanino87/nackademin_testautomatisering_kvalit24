@@ -1,14 +1,22 @@
 class HomePage:
     
-# -- Locators on HomePage -- # 
+# -- Locators on LoginPage without Semantic Style with CSS & XPath Style  -- # 
 
     def __init__(self, page):
         self.page = page
         self.product_name_input=page.locator('input[placeholder="Product Name"]')
         self.create_product_button=page.locator('button:has-text("Create Product")')
         self.product_lists=page.locator('.product-grid')
+    
+# -- Locators on Homepage with Semantic Style  Makes the locators more robust in testing --
+    def __init__(self, page):
+        self.page = page
+        # Instead of CSS, use semantic locators
+        self.product_name_input = page.get_by_placeholder("Product Name")  # replaces input[placeholder="Product Name"]
+        self.create_product_button = page.get_by_role("button", name="Create Product")  # replaces button:has-text("Create Product")
+        self.product_lists = page.locator('.product-grid')  # keeping grid by class, but could refine if needed
 
-       
+   
 # -- Actions on HomePage -- # 
     def navigate(self):
         self.page.goto("http://localhost:5173/")
