@@ -15,5 +15,7 @@ class SignupPage:
         self.signup_submit_btn.click()
 
     def handle_dialog(self, dialog):
-        """Handle confirmation/alert dialogs during signup"""
+        """Handle confirmation/alert dialogs during signup works even if user is already registered"""
         dialog.accept()
+    
+    
