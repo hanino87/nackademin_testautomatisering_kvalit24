@@ -1,5 +1,4 @@
 class LoginPage:
-    # --- Locators on LoginPage with Semantic Style ---
     def __init__(self, page):
         self.page = page
         # Semantic locators (robust against style/DOM changes)
