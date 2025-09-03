@@ -65,11 +65,11 @@ class HomePage:
             items.first.locator(delete_btn_selector).click()
        
        
-    def create_product(self, name: str):
+    def create_product(self, product_titel: str):
         """Create a new product and return locator of the last added product"""
-        self.product_name_input.fill(name)
+        self.product_name_input.fill(product_titel)
         self.create_product_button.click()
-        return self.product_lists.locator(f".product-item:has-text('{name}')").last
+        return self.product_lists.locator(f".product-item:has-text('{product_titel}')").last
 
     def get_first_product(self):
         """Return locator for the first product in the grid"""
