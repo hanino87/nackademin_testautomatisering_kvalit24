@@ -22,7 +22,8 @@ def test_add_product_to_catalog(page: Page):
     login_page.navigate_to_signup()
     signup_page.register_user("testuser","secret")
     signup_page.page.on("dialog", lambda dialog: signup_page.handle_dialog(dialog))
-    home_page.navigate() # go back to page manually you go to inlogpage after signup but in the automation you have to navigate extra step 
+    signup_page.navigate_back_to_login()
+    # home_page.navigate() # go back to page manually you go to inlogpage after signup but in the automation you have to navigate extra step 
     login_page.login_with_user_that_exist_in_database("testuser","secret")
     expect(product_page.empty_product_message).to_be_visible(timeout=10000) 
     product_page.add_product("Bajen Shirt")

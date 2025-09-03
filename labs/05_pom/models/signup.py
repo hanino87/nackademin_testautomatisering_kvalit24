@@ -4,7 +4,8 @@ class SignupPage:
         # Semantic locators (robust and easier to read more robust than CSS/XPath)
         self.signup_input_username = page.get_by_placeholder("Username")
         self.signup_input_password = page.get_by_placeholder("Password")
-        self.signup_submit_btn = page.get_by_role("button", name="Sign Up")  
+        self.signup_submit_btn = page.get_by_role("button", name="Sign Up") 
+        self.signup_login_btn= page.get_by_role("button", name="Login")
 
     # --- Actions on Signup page --- #
     def register_user(self, username: str, password: str):
@@ -16,5 +17,8 @@ class SignupPage:
     def handle_dialog(self, dialog):
         """Handle confirmation/alert dialogs during signup works even if user is already registered"""
         dialog.accept()
-    
+        
+    def navigate_back_to_login(self):
+       self.signup_login_btn.click()
+
     
