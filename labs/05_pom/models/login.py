@@ -10,7 +10,7 @@ class LoginPage:
         # If "Sign Up" is actually a button in your app:
         # self.button_signup = page.get_by_role("button", name="Sign Up")
 
-    # --- Actions on LoginPage ---
+   # --- Page Actions ---
     def navigate_to_signup(self):
         """Click the Sign Up button/link to navigate to signup page"""
         self.btn_signup.click()
