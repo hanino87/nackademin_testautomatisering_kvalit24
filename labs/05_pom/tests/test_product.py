@@ -16,7 +16,6 @@ def test_add_product_to_catalog(page: Page):
     login_page = LoginPage(page)
     signup_page=SignupPage(page)
     
-    
     home_page.navigate()
     login_page.navigate_to_signup()
     signup_page.register_user("testuser","secret")
@@ -66,8 +65,14 @@ def test_remove_product_from_catalog(page: Page):
     
     # Assert that the other products in the store has not been deleted 
     expect(home_page.product_lists).to_contain_text("Bajen Shirt")
+    
     # Assert that by deleting just one product the store is not empty of products
     expect(home_page.empty_product_message).to_be_hidden()
+    
+    home_page.delete_all_products_in_store()
+    
+    # Assert that all products in store is gone the product catalog should be empty 
+    expect(home_page.empty_product_message).to_be_visible()
     
     # Teardown
     home_page.logout_from_store()

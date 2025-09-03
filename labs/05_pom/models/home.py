@@ -27,31 +27,44 @@ class HomePage:
         # Find all products matching the name
         products = self.product_lists.locator(
             f".product-item:has-text('{product_title}')")
-
+        
         # Check if any exist
         if products.count() == 0:
             return  # Nothing to delete
-
+        
         # Get the last product
         last_product = products.last
-
+        
         # Wait for it to be visible
         last_product.wait_for(state="visible")
-
+        
         # Find the Delete button inside the last product
-        delete_button = last_product.locator(".product-item-button")
-        delete_button.wait_for(state="visible")
+        delete_btn = last_product.locator(".product-item-button")
+        delete_btn.wait_for(state="visible")
 
         # Click to delete
-        delete_button.click()
+        delete_btn.click()
 
         # Short pause to let DOM update
         self.page.wait_for_timeout(200)
-    # models/home.py
+ 
 
     def logout_from_store(self):
+        """logout from store as a perfect teardown in each test"""
         self.logout_btn.click()
-
+        
+    def delete_all_products_in_store(self):
+        """delete all products in the list"""
+        product_grid=self.product_lists
+        items= product_grid.locator(".product-item")
+        delete_btn_selector= ".product-item-button"
+        
+        total_items=items.count()
+        
+        for _ in range(total_items): 
+            items.first.locator(delete_btn_selector).click()
+       
+       
     def create_product(self, name: str):
         """Create a new product and return locator of the last added product"""
         self.product_name_input.fill(name)
