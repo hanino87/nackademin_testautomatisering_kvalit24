@@ -3,6 +3,7 @@ from models.home import HomePage
 from models.login import LoginPage
 from models.signup import SignupPage 
 from models.product import ProductPage
+import libs.utils
 
 def test_add_product_to_catalog(page: Page):
     
@@ -20,7 +21,9 @@ def test_add_product_to_catalog(page: Page):
     
     home_page.navigate()
     login_page.navigate_to_signup()
-    signup_page.register_user("testuser","secret")
+    username = libs.utils.generate_username()
+    password=libs.utils.generate_password()
+    signup_page.register_user(username,password)
     signup_page.page.on("dialog", lambda dialog: signup_page.handle_dialog(dialog))
     signup_page.navigate_back_to_login()
     # home_page.navigate() # go back to page manually you go to inlogpage after signup but in the automation you have to navigate extra step 
