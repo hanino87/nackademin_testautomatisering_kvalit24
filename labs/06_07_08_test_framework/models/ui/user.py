@@ -11,7 +11,7 @@ class UserPage:
     def get_user_products(self):
         # complete code
 
-    def add_product_to_user(self, product_name):
+    def add_product_to_end(self, product_name):
         # complete code
 
     def remove_product_from_user(self, product_name):
