@@ -23,6 +23,7 @@ class AdminAPI():
         return response
     
     def search_product_id(self, product_name):
+     """Search product by id """
      headers = {"Authorization": f"Bearer {self.token}"}
      print(f"DEBUG: Using token = {self.token}")  # Ensure this is a string, not Response object
 
