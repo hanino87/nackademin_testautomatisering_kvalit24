@@ -15,6 +15,8 @@ def test_signup():
     signup_api_response = user_api.signup(username,password)
     assert signup_api_response.status_code == 200
     print(f"User signed up successfully with status {signup_api_response.status_code}")
+    
+    
 
 def test_login():
     

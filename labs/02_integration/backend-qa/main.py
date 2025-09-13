@@ -40,6 +40,7 @@ class User(Base):
     username = Column(String, unique=True, index=True)
     hashed_password = Column(String)
     products = relationship("Product", secondary=user_products, back_populates="owners")
+    
 
 class Product(Base):
     __tablename__ = "products"

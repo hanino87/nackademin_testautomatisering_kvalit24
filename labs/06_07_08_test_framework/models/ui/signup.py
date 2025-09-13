@@ -3,7 +3,7 @@
 class SignupPage:
     def __init__(self, page):
         self.page = page
-
+        #page_(element-type)_(descriptive-name)
         self.signup_input_username = page.get_by_placeholder('Username')
         self.signup_input_password = page.get_by_placeholder('Password')
         self.signup_btn_signup = page.locator('button.button-primary')
@@ -16,4 +16,4 @@ class SignupPage:
         self.signup_btn_signup.click()
 
     def go_to_home(self):
-        # complete code
+        self.signup_btn_login.click()
