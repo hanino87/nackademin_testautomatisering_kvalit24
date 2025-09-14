@@ -22,7 +22,7 @@ class AdminAPI():
         response = requests.post(f"{self.base_url}/products", json=body, headers=headers)
         return response
     
-    def search_product_id(self, product_name):
+    def search_product_id(self, product_name:str):
      """Search product by id """
      headers = {"Authorization": f"Bearer {self.token}"}
      print(f"DEBUG: Using token = {self.token}")  # Ensure this is a string, not Response object
@@ -48,8 +48,8 @@ class AdminAPI():
             return product_id
 
      raise Exception(f"Product '{product_name}' not found")
-
-
+ 
+ 
     def delete_product_by_name(self, product_name: str):
     # Find the product ID first
      product_id = self.search_product_id(product_name)
@@ -57,11 +57,8 @@ class AdminAPI():
         raise ValueError(f"Product '{product_name}' not found")
 
      headers = {"Authorization": f"Bearer {self.token}"}
-     body = {"name": product_name}
-
      response = requests.delete(
         f"{self.base_url}/product/{product_id}",
-        json=body,
         headers=headers
     )
 
@@ -76,7 +73,33 @@ class AdminAPI():
      print(f"✅ Deleted product '{product_name}' with ID {product_id}")
 
      return response.json()
+ 
+    def delete_all_products(self, product_name: str):
+        """Delete all products with the given name"""
+         # Hitta alla produkt-id:n som matchar namnet
+        product_id = self.search_product_id(product_name)
+        
+        headers = {"Authorization": f"Bearer {self.token}"}
+        print(f"DEBUG: Using token = {self.token}") 
+        response = requests.delete(
+        f"{self.base_url}/product/{product_id}",
+        headers=headers)
+        # Om search_product_id returnerar en lista
+        if not product_id:
+         return  # inget att ta bort
 
+        # Ta bort alla produkter som matchar
+        for product_id in product_id:
+           self.products = [p for p in self.products if p["id"] != product_id]
+        print(f"DEBUG: DELETE /product/{product_id} status = {response.status_code}")
+        print(f"DEBUG: DELETE response = {response.text}")
+        
+        # assert deletion of all products 
+        assert response.status_code == 200, f"Failed to delete product {product_id}"
+        print(f"✅ Deleted product '{product_name}' with ID {product_id}")
+        
+      
+    
 
 
 

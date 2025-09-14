@@ -12,7 +12,6 @@ class HomePage:
         self.login_label_have_account = page.get_by_text("Don't have an account?")
         self.login_btn_signup = page.locator('#signup')
 
-
     def navigate(self):
         self.page.goto("http://localhost:5173/")
 

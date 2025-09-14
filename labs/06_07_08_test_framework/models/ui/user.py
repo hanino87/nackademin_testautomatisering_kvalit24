@@ -2,17 +2,42 @@
 # produts from the Product Catalog and/or
 # remove it
 
+# tips log in as a user with products and user without products create does user with product through backend 
+
 class UserPage:
-    def __init__(self, page):
+    def __init__(self, page,username,):
         self.page = page
+        self.header_title = page.get_by_text("Nackademin Course App")
+        self.welcome_message_with_username = page.get_by_text(f"Welcome, {username}!")
+        self.user_header_products_title_with_products = page.get_by_text("Your Products:") # but this is dangerous if there are same texts on the page somewhere 
+        self.user_header_products_title_with_products = page.get_by_text("No products assigned") # but this is dangerous if there are same texts on the page somewhere 
+        self.button_logout = page.get_by_role("button", name="Logout")
+        self.grid_locator = page.locator("#root > div > div") 
         #page_(element-type)_(descriptive-name)
-        # complete code
-
+       
     def get_user_products(self):
-        # complete code
+        
+        # potential grid on webpage thats why its not in the instructor beacuse init is for element that is static on the webpage 
+        grid_with_products=self.page.locator("#root > div > div") # took id root and then go down 2 step in dom element to find the grid with products 
+        
+         # Check if user has no products assigned by going down to p element in the last grid 
+        if self.grid_locator.locator("p", has_text="No products assigned.").is_visible():
+            return []
+        
+        # check if user has product and if so list them # here you go down to check all div in the product grid and each represent an product 
+        product_divs = grid_with_products.locator("div") 
+        
+        # get all texts from the grids 
+          
+        product_texts = [div.inner_text() for div in product_divs.all()] # assing all inner text from every produt-item grid from the whole grid of products 
+        return product_texts # return it as a whole list 
+    
+    def logout(self):
+        self.button_logout.click()
+        
 
-    def add_product_to_end(self, product_name):
-        # complete code
+    def add_product_to_end(self, product_name): # Misses in frontend ui-mode 
+        pass
 
-    def remove_product_from_user(self, product_name):
-        # complete code
+    def remove_product_from_user(self, product_name):# Misses in frontend ui-mode 
+        pass

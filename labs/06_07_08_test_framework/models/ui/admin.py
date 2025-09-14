@@ -2,46 +2,39 @@
 # that are in the Product Catalog to be used
 # by all the users
 
-
 class AdminPage:
     def __init__(self, page):
         self.page = page
-        self.login_welcome_message = page.get_by_text('Welcome, admin!')
         self.product_name_input = page.get_by_placeholder('Product Name')
         self.create_product_btn=page.get_by_role("button", name="Create Product")
-        self.product_lists=page.locator(".product-grid")
+        self.welcome_message = page.locator("h2:has-text('Welcome')")
+        self.products_header_text=page.locator("h3:has-text('Products available:')")
+        self.product_grid=page.locator(".product-grid")
+        self.product_list=page.locator(".product-grid > .product-item > span") # go down in the domstructur to product items span elment which contains productname 
+        self.logout_btn=page.get_by_role("button", name="Logout")
         #page_(element-type)_(descriptive-name)
         #complete admin view elements
    
-    def get_current_product_count(self,):
-        "Metod for get and count number of products in the product list"
-        self.product_lists.wait_for(state="visible")  # wait for the element to be visible to make test more robust 
-        grid_items = self.product_lists.locator(".product-item") # assign the products inside the dive 
-        count = grid_items.count() 
-        return count
-        # complete logic
-        # return number of total products displayed
+    def get_current_product_count(self):
+      """Get and return all product names as a list"""
+    # Wait for the grid or at least one product to be visible
+      self.product_list.first.wait_for(state="visible", timeout=5000)
+      # Return list of product names
+      return [p.inner_text().strip() for p in self.product_list.all()]
 
-    def create_product(self,product_name):
+
+    def create_product(self,product_name:str):
         "Metod for create a product and fill in product name"
         self.product_name_input.wait_for(state="visible")# wait for the element to be visible to make test more robust 
-        self.create_product_btn.fill(product_name)
+        self.product_name_input.fill(product_name)
         self.create_product_btn.click()
+        self.page.locator(".product-grid > .product-item > span", has_text=product_name).wait_for(state="visible")
     
-    def create_two_products(self,product_name):
-        "Metod for create a product and fill in product name"
-        self.product_name_input.wait_for(state="visible")# wait for the element to be visible to make test more robust 
-        self.create_product_btn.fill(product_name)
-        self.create_product_btn.click()
-        self.create_product_btn.fill(product_name)
-        self.create_product_btn.click()
-  
-  
-
-    def delete_product_by_name(self,product_name):
+    def delete_product_by_name_last_of_same_product(self,product_name:str):
           # Find all products matching the name by go to locators under the paraent product_list use has-text attribute on the product element 
         products = self.product_lists.locator(
             f".product-item:has-text('{product_name}')") 
+        
         
         # Check if any exist
         if products.count() == 0:
@@ -62,3 +55,25 @@ class AdminPage:
 
         # Short pause to let DOM update
         self.page.wait_for_timeout(200)
+    
+    def delete_product_by_name(self, product_name:str):
+        product_div = self.page.locator(
+            f'//div[@class="product-item"][span[text()="{product_name}"]]' # nicer xapth to find the element 
+        )
+        product_div.locator("button.product-item-button").click() # in the grid find button with class product-item-button 
+
+        
+    def delete_all_products_in_store(self):
+        """delete all products in the list"""
+        product_grid=self.product_lists
+        items= product_grid.locator(".product-item")
+        delete_btn_selector= ".product-item-button"
+        
+        total_items=items.count()
+        
+        for _ in range(total_items): 
+            items.first.locator(delete_btn_selector).click()
+    
+    def logout_from_store(self):
+        """logout from store as a perfect teardown in each test"""
+        self.logout_btn.click()

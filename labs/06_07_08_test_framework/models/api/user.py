@@ -10,6 +10,7 @@ class UserAPI():
         self.token = None # None so the token dont owerwrite in the test 
         
     def login(self, username: str, password: str):
+        """ login metod"""
         body = {"username": username, "password": password}
         response = requests.post(f"{self.base_url}/login", json=body)
         if response.status_code == 200:
@@ -26,7 +27,8 @@ class UserAPI():
     
     def get_user_profile(self):
         """get user loged in profile"""
-        response=requests.get(f"{self.base_url}/user",headers=self.headers) # store it in an variable the response 
+        headers = {"Authorization": f"Bearer {self.token}"}
+        response=requests.get(f"{self.base_url}/user",headers=headers) # store it in an variable the response 
         return response 
         
     def get_user_all_products(self):
@@ -39,17 +41,14 @@ class UserAPI():
         """Return product ID by name"""
         headers = {"Authorization": f"Bearer {self.token}"}
         response = requests.get(f"{self.base_url}/products", headers=headers)
-    
-        data = response.json()
+        data = response.json() # decode json response to a python object so you can iterate throught that object 
         products = data.get("products", [])  # Make sure to access the nested list
-
         for p in products:
           if p.get("name") == product_name:
             return p.get("id")
         return None
 
                 
-    
     def add_product_to_user(self, product_name:str):
        """add a product to the user"""
        # add product_id variable to matching name from the product list metod for id 
