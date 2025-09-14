@@ -1,8 +1,9 @@
 # View where an user (non admin) can Choose
 # produts from the Product Catalog and/or
 # remove it
-
+import os
 import requests
+
 
 class UserAPI():
     def __init__(self, base_url):
@@ -10,7 +11,7 @@ class UserAPI():
         self.token = None # None so the token dont owerwrite in the test 
         
     def login(self, username: str, password: str):
-        """ login metod"""
+        """ Login metod"""
         body = {"username": username, "password": password}
         response = requests.post(f"{self.base_url}/login", json=body)
         if response.status_code == 200:

@@ -1,4 +1,11 @@
+
+import os
 import requests
+from dotenv import load_dotenv
+
+# Load .env once when this file is imported
+load_dotenv()
+
 class AdminAPI():
     def __init__(self, base_url,token):
         self.base_url = base_url

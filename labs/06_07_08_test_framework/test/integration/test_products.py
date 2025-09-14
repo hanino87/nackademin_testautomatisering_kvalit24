@@ -1,14 +1,26 @@
 from models.api.admin import AdminAPI
 from models.api.user import UserAPI
+import os
+from dotenv import load_dotenv
+
+# Load .env once at the top of the test file
+load_dotenv(dotenv_path="libs/.env")
+
+print("Frontend URL:", os.getenv("BASE_URL_FRONTEND"))
+print("Backend URL:", os.getenv("BASE_URL_BACKEND"))
 
 def login_as_admin():
     """ helper function login as admin"""
-    username = "admin"
-    password = "admin1234"
-    user_api = UserAPI("http://127.0.0.1:8000")
+    username = os.getenv("ADMIN_USERNAME")
+    password = os.getenv("ADMIN_PASSWORD")
+    base_url = os.getenv("BASE_URL_BACKEND")
+    print("Frontend URL:", os.getenv("BASE_URL_FRONTEND"))
+    print("Backend URL:", os.getenv("BASE_URL_BACKEND"))
+    user_api = UserAPI(base_url)
     token = user_api.login(username, password)
     assert token, "Admin login failed, no token returned"
-    return AdminAPI("http://127.0.0.1:8000", token=token)
+    return AdminAPI(base_url, token=token)
+    
 
 
 def test_add_product_to_catalog():

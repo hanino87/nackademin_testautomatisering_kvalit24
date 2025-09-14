@@ -1,13 +1,19 @@
 import libs.utils
 from models.api.user import UserAPI
+import os 
+from dotenv import load_dotenv
 
-BASE_URL = "http://127.0.0.1:8000"
+# Load .env once at the top of the test file
+load_dotenv(dotenv_path="libs/.env")
+
 
 def test_signup_and_login():
     """Sign up a new user and verify login works"""
     username = libs.utils.generate_string_with_prefix()
     password = libs.utils.generate_password_with_prefix()
-    user_api = UserAPI(BASE_URL)
+    base_url = os.getenv("BASE_URL_BACKEND")
+    print("Backend URL:", os.getenv("BASE_URL_BACKEND"))
+    user_api = UserAPI(base_url)
 
     # Signup
     signup_response = user_api.signup(username, password)
@@ -22,9 +28,10 @@ def test_signup_and_login():
 
 def test_user_product_list():
     """Login and verify the product list for a user"""
+    base_url = os.getenv("BASE_URL_BACKEND")
     username = libs.utils.generate_string_with_prefix()
     password = libs.utils.generate_password_with_prefix()
-    user_api = UserAPI(BASE_URL)
+    user_api = UserAPI(base_url)
 
     # Ensure user exists
     user_api.signup(username, password)

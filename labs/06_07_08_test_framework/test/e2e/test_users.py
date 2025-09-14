@@ -5,6 +5,11 @@ from models.ui.signup import SignupPage
 from models.ui.user import UserPage
 from models.api.user import UserAPI
 import libs.utils
+import os 
+from dotenv import load_dotenv
+
+# Load .env once at the top of the test file
+load_dotenv(dotenv_path="libs/.env")
 
 
 @pytest.fixture(scope="function")
@@ -19,9 +24,10 @@ def page_context(browser):
 def login_user(page_context: Page):
     """Return a function that logs in a user via API token."""
     def _login(username: str, password: str) -> UserPage:
-        home_page = HomePage(page_context)
+        home_page = HomePage(page_context) 
         user_page = UserPage(page_context, username)
-        user_api = UserAPI("http://localhost:8000")
+        user_api = os.getenv("BASE_URL_BACKEND")
+        user_api = UserAPI(user_api)
         token = user_api.login(username, password)
         page_context.add_init_script(f'window.localStorage.setItem("token", "{token}");')
         home_page.navigate()
@@ -58,9 +64,8 @@ def test_signup(page_context: Page):
 
 def test_user_no_products(page_context: Page, login_user):
     """validate that user can log in and see it has no products """
-    username = "userwithnoproduct"
-    password = "user1234"
-
+    username = os.getenv("USERNAME1")
+    password = os.getenv("PASSWORD_USER1")
     user_page, _ = login_user(username, password)
     products = user_page.get_user_products()
 
@@ -72,8 +77,8 @@ def test_user_no_products(page_context: Page, login_user):
 
 def test_user_with_products(page_context: Page, login_user):
     """validate that user can log in and see its products """
-    username = "userwithproduct"
-    password = "user1234"
+    username = os.getenv("USERNAME2")
+    password = os.getenv("PASSWORD_USER2")
 
     user_page, _ = login_user(username, password)
     products = user_page.get_user_products()

@@ -2,15 +2,23 @@ from playwright.sync_api import Page, expect
 from models.ui.home import HomePage
 from models.ui.admin import AdminPage
 from models.api.user import UserAPI
+from dotenv import load_dotenv
+import os
+
+load_dotenv(dotenv_path="libs/.env")
 
 
 def login_as_admin(page: Page):
-    """Log in as admin via API token and return page objects."""
-    username = "admin"
-    password = "admin1234"
+    """Log in as admin via API token and return page objects. and load senstive stuff from env file"""
+    username = os.getenv("ADMIN_USERNAME")
+    password = os.getenv("ADMIN_PASSWORD")
+    base_url = os.getenv("BASE_URL_BACKEND")
+    
+
     home_page = HomePage(page)
     admin_page = AdminPage(page)
-    user_api = UserAPI("http://localhost:8000")
+    user_api = UserAPI(base_url)
+
     token = user_api.login(username, password)
     # Set token directly in localStorage to skip UI login
     page.add_init_script(f'window.localStorage.setItem("token", "{token}");')
@@ -35,7 +43,7 @@ def test_add_product_to_catalog(page: Page):
     assert after_count == before_count + 1, (
         f"Expected product count to increase by 1, but went from {before_count} to {after_count}"
     )
-     existing_products=admin_page.get_current_product_count()
+    existing_products=admin_page.get_current_product_count()
     print("✅ Products is in the store we now have 2 products:", existing_products)
 
 def test_remove_product_from_catalog(page: Page,):
