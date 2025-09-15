@@ -26,7 +26,7 @@ def test_signup_and_login():
     print(f"✅ Logged in successfully with token: {token}")
 
 
-def test_user_product_list():
+def test_login_and_get_user_products():
     """Login and verify the product list for a user"""
     base_url = os.getenv("BASE_URL_BACKEND")
     username = libs.utils.generate_string_with_prefix()

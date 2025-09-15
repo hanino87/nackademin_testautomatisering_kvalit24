@@ -7,14 +7,12 @@ import os
 
 load_dotenv(dotenv_path="libs/.env")
 
-
 def login_as_admin(page: Page):
     """Log in as admin via API token and return page objects. and load senstive stuff from env file"""
     username = os.getenv("ADMIN_USERNAME")
     password = os.getenv("ADMIN_PASSWORD")
     base_url = os.getenv("BASE_URL_BACKEND")
     
-
     home_page = HomePage(page)
     admin_page = AdminPage(page)
     user_api = UserAPI(base_url)
