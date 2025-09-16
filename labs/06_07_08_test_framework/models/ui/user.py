@@ -8,7 +8,7 @@ class UserPage:
     def __init__(self, page,username,):
         self.page = page
         self.header_title = page.get_by_text("Nackademin Course App")
-        self.welcome_message_with_username = page.get_by_text(f"Welcome, {username}!")
+        self.welcome_message_with_username = page.get_by_text(f"Welcome, {username}", exact=False) # false to make if work in 
         self.user_header_products_title_with_products = page.get_by_text("Your Products:") # but this is dangerous if there are same texts on the page somewhere 
         self.user_header_products_title_with_products = page.get_by_text("No products assigned") # but this is dangerous if there are same texts on the page somewhere 
         self.button_logout = page.get_by_role("button", name="Logout")
