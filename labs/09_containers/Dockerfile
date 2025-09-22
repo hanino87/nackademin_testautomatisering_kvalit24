@@ -22,4 +22,4 @@ WORKDIR /home
 
 # Default command when container starts
 # - Runs pytest, which will discover and execute test_home.py
-CMD ["pytest"]
+CMD ["pytest -s -v "]
