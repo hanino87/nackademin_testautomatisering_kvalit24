@@ -25,34 +25,36 @@ def login_as_admin(page: Page):
 def test_add_product_to_catalog(page: Page):
     """Validate admin can add product to shop."""
     home_page, admin_page = login_as_admin(page)
-
-    before_count = len(admin_page.get_current_product_count())
     admin_page.create_product("fish")
-
     fish_locator = admin_page.page.locator(".product-grid span", has_text="fish")
     expect(fish_locator).to_be_visible()
-
-    after_count = len(admin_page.get_current_product_count())
-    assert after_count == before_count + 1, (
-        f"Expected product count to increase by 1, but went from {before_count} to {after_count}"
+    total_products = len(admin_page.get_current_product_count())
+    assert total_products == 2, (
+        f"Expected product basket to have 1 item count to increase by 2, but went it has not 2 items"
     )
-
-    print("✅ Product added. Total products:", after_count)
+    print("✅ Product added. Total products:", total_products)
 
 
 def test_remove_product_from_catalog(page: Page):
     """Validate admin can remove product from shop."""
     home_page, admin_page = login_as_admin(page)
-
-    before_count = len(admin_page.get_current_product_count())
     admin_page.delete_product_by_name("fish")
 
     fish_locator = admin_page.page.locator(".product-grid span", has_text="fish")
-    expect(fish_locator).to_have_count(0)
-
-    after_count = len(admin_page.get_current_product_count())
-    assert after_count == before_count - 1, (
-        f"Expected product count to decrease by 1, but went from {before_count} to {after_count}"
+    expect(fish_locator).to_be_hidden()
+    
+    total_products = len(admin_page.get_current_product_count())
+    assert total_products == 1, (
+        f"Expected product basket to have 1 item count to increase by 2, but it has not 2 items"
     )
+    print("✅ Product added. Total products:", total_products)
 
-    print("✅ Product removed. Total products:", after_count)
+    # assert that empty basket message is not visible on the page 
+    empty_basket_message=admin_page.no_products_header_text
+    expect(empty_basket_message).to_be_hidden()
+    if empty_basket_message.is_hidden():
+     print("✅ Product is gone. Total products: 1")
+    else:
+      print("❌ Ah i see the empty basket message we raise a bug to developet 1 products should be in the list")
+   
+

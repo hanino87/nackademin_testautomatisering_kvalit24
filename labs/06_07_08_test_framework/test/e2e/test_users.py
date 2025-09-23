@@ -8,21 +8,11 @@ import os
 from dotenv import load_dotenv
 from pytest_bdd import scenarios, given, when, then
 
-scenarios('../../features/my.feature')
 
 load_dotenv(dotenv_path="libs/.env")
+FEATURE_FILE = os.path.join(os.path.dirname(__file__), '../../features/authentication.feature')
+scenarios(FEATURE_FILE)
 
-# """Feature: User Signup and Login authentication  
-
-#   Scenario: New user can sign up and log in successfully
-#     Given a new user with a unique username and password
-#     When the user signs up via the UI
-#     And the user logs in via the UI
-#     Then the user should see a personalized welcome message""" 
-
-@scenario('features/authentication.feature', 'New user can sign up and log in successfully')
-def test_signup():
-    pass 
 
 @given("a new user with a unique username and password")
 def given_new_user(page):
@@ -81,18 +71,37 @@ def then_see_welcome_message(page):
     expect(user_page.welcome_message_with_username).to_contain_text(username)
     expect(home_page.login_input_username).to_be_hidden()
     expect(home_page.login_input_password).to_be_hidden()
+    
+    
+def login_user(page, username, password):
+    """Login a user via API and inject token into localStorage."""
+    home_page = HomePage(page)
+    user_page = UserPage(page, username)
+    user_api = UserAPI(os.getenv("BASE_URL_BACKEND"))
+    token = user_api.login(username, password)
+    page.add_init_script(f'window.localStorage.setItem("token", "{token}");')
+    home_page.navigate()
+    return user_page, home_page
 
 def test_user_with_no_products(page):
-    """validate that user can log in and see it has no products """
+    """Validate that user can log in and see it has no products."""
     username = os.getenv("USERNAME1")
     password = os.getenv("PASSWORD_USER1")
     user_page, _ = login_user(page, username, password)
-    products = user_page.get_user_products()
 
-    assert len(products) == 0
+    # Wait until "Loading user info" disappears
+    loading_locator = page.get_by_text("Loading user info")
+    loading_locator.wait_for(state="hidden")
+
+    # Now check for "No products assigned."
     no_products_locator = page.get_by_text("No products assigned.")
+    no_products_locator.wait_for(state="visible")
+
+    products = user_page.get_user_products()
+    assert len(products) == 0
     assert no_products_locator.is_visible()
-    print("✅ Products for the user it has no one as you can see:", products)
+
+    print("✅ Products for the user:", products)
 
 
 def test_user_with_products(page):
@@ -108,68 +117,60 @@ def test_user_with_products(page):
     print("✅ Products for the user:", products)
     
     
-def login_user(page, username, password):
-    """Login a user via API and inject token into localStorage."""
-    home_page = HomePage(page)
-    user_page = UserPage(page, username)
-    user_api = UserAPI(os.getenv("BASE_URL_BACKEND"))
-    token = user_api.login(username, password)
-    page.add_init_script(f'window.localStorage.setItem("token", "{token}");')
-    home_page.navigate()
-    return user_page, home_page
 
 
-"""User Products feature tests."""
 
-from pytest_bdd import (
-    given,
-    scenario,
-    then,
-    when,
-)
+# """User Products feature tests."""
 
-
-@scenario('features/user.feature', 'User with no products can see it has no products')
-def test_user_with_no_products_can_see_it_has_no_products():
-    """User with no products can see it has no products."""
+# from pytest_bdd import (
+#     given,
+#     scenario,
+#     then,
+#     when,
+# )
 
 
-@scenario('features/user.feature', 'User with products can see their products')
-def test_user_with_products_can_see_their_products():
-    """User with products can see their products."""
+# @scenario('features/user.feature', 'User with no products can see it has no products')
+# def test_user_with_no_products_can_see_it_has_no_products():
+#     """User with no products can see it has no products."""
 
 
-@given('a user with username "USERNAME1" and password "PASSWORD_USER1"')
-def _():
-    """a user with username "USERNAME1" and password "PASSWORD_USER1"."""
-    raise NotImplementedError
+# @scenario('features/user.feature', 'User with products can see their products')
+# def test_user_with_products_can_see_their_products():
+#     """User with products can see their products."""
 
 
-@given('a user with username "USERNAME2" and password "PASSWORD_USER2"')
-def _():
-    """a user with username "USERNAME2" and password "PASSWORD_USER2"."""
-    raise NotImplementedError
+# @given('a user with username "USERNAME1" and password "PASSWORD_USER1"')
+# def _():
+#     """a user with username "USERNAME1" and password "PASSWORD_USER1"."""
+#     raise NotImplementedError
 
 
-@when('the user logs in')
-def _():
-    """the user logs in."""
-    raise NotImplementedError
+# @given('a user with username "USERNAME2" and password "PASSWORD_USER2"')
+# def _():
+#     """a user with username "USERNAME2" and password "PASSWORD_USER2"."""
+#     raise NotImplementedError
 
 
-@then('the product list should contain "Laptop"')
-def _():
-    """the product list should contain "Laptop"."""
-    raise NotImplementedError
+# @when('the user logs in')
+# def _():
+#     """the user logs in."""
+#     raise NotImplementedError
 
 
-@then('the user should see no products')
-def _():
-    """the user should see no products."""
-    raise NotImplementedError
+# @then('the product list should contain "Laptop"')
+# def _():
+#     """the product list should contain "Laptop"."""
+#     raise NotImplementedError
 
 
-@then('the user should see their products')
-def _():
-    """the user should see their products."""
-    raise NotImplementedError
+# @then('the user should see no products')
+# def _():
+#     """the user should see no products."""
+#     raise NotImplementedError
+
+
+# @then('the user should see their products')
+# def _():
+#     """the user should see their products."""
+#     raise NotImplementedError

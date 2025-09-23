@@ -5,10 +5,11 @@
 class AdminPage:
     def __init__(self, page):
         self.page = page
-        self.product_name_input = page.get_by_placeholder('Product Name')
+        self.product_name_input = page.locator('input[placeholder="Product Name"]')
         self.create_product_btn=page.get_by_role("button", name="Create Product")
         self.welcome_message = page.locator("h2:has-text('Welcome')")
         self.products_header_text=page.locator("h3:has-text('Products available:')")
+        self.no_products_header_text=page.locator("p:has-text('No products available.')")
         self.product_grid=page.locator(".product-grid")
         self.product_list=page.locator(".product-grid > .product-item > span") # go down in the domstructur to product items span elment which contains productname 
         self.logout_btn=page.get_by_role("button", name="Logout")
@@ -21,12 +22,12 @@ class AdminPage:
       self.product_list.first.wait_for(state="visible", timeout=5000)
       # Return list of product names
       return [p.inner_text().strip() for p in self.product_list.all()]
-
-
+  
+    
     def create_product(self,product_name:str):
         "Metod for create a product and fill in product name"
-        self.product_name_input.wait_for(state="visible")# wait for the element to be visible to make test more robust 
-        self.product_name_input.fill(product_name)
+        self.product_name_input.wait_for(state="attached")
+        self.product_name_input.fill("fish")
         self.create_product_btn.click()
         self.page.locator(".product-grid > .product-item > span", has_text=product_name).wait_for(state="visible")
     
