@@ -1,3 +1,6 @@
+# View  where the admin user can manage the products
+# that are in the Product Catalog to be used
+# by all the users
 import os
 import requests
 from dotenv import load_dotenv

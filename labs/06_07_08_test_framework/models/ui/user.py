@@ -1,8 +1,4 @@
-# View where an user (non admin) can Choose
-# produts from the Product Catalog and/or
-# remove it
-
-# tips log in as a user with products and user without products create does user with product through backend 
+# Page where an user (non admin) can see their user products 
 
 class UserPage:
     def __init__(self, page,username,):
@@ -16,6 +12,7 @@ class UserPage:
         #page_(element-type)_(descriptive-name)
        
     def get_user_products(self):
+        """"Metod to get user products"""
         
         # potential grid on webpage thats why its not in the instructor beacuse init is for element that is static on the webpage 
         grid_with_products=self.page.locator("#root > div > div") # took id root and then go down 2 step in dom element to find the grid with products 
@@ -33,6 +30,7 @@ class UserPage:
         return product_texts # return it as a whole list 
     
     def logout(self):
+        """"Metod to logout from userpage"""
         self.button_logout.click()
         
 

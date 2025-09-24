@@ -11,9 +11,11 @@ class SignupPage:
 
 
     def signup(self,username,password):
+        """" Metod to singup a user  """ 
         self.signup_input_username.fill(username)
         self.signup_input_password.fill(password)
         self.signup_btn_signup.click()
-
+        
     def go_to_home(self):
+        """ Metod to navigate to homepage""" 
         self.signup_btn_login.click()
