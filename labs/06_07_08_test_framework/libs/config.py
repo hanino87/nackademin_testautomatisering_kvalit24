@@ -2,10 +2,36 @@
 import os
 from dotenv import load_dotenv
 from models.api.user import UserAPI
+import requests
 
 # Load .env once
 dotenv_path = os.path.join(os.path.dirname(__file__), "../.env")
 load_dotenv(dotenv_path=dotenv_path)
+
+
+def ensure_admin_exists():
+    """Ensure the first user (admin) exists.
+    If DB is empty, /signup will create the admin.
+    If user already exists, backend should return 400/409 and we ignore it.
+    """
+    base_url = get_backend_url()
+    username, password = get_admin_credentials()
+
+    print(f"Ensuring admin exists via {base_url}/signup ...")
+
+    resp = requests.post(
+        f"{base_url}/signup",
+        json={"username": username, "password": password}
+    )
+
+    if resp.status_code == 201:
+        print("✅ Admin created successfully (first user in DB).")
+    elif resp.status_code in (400, 409):
+        print("ℹ️ Admin already exists, continuing...")
+    else:
+        print(f"⚠️ Unexpected response {resp.status_code}: {resp.text}")
+        resp.raise_for_status()
+
 
 # ----------------------------
 # Environment getters
@@ -47,7 +73,13 @@ def get_user_credentials(user_id: int = 1):
 # Login helpers
 # ----------------------------
 def login_as_admin(page=None):
-    """Login as admin; return AdminAPI or page objects if page is passed"""
+    """
+    Login as admin; return AdminAPI or page objects if page is passed.
+    Automatically creates the first admin if the database is empty.
+    """
+    # Ensure first admin exists
+    ensure_admin_exists()
+    
     username, password = get_admin_credentials()
     base_url = get_backend_url()
     token = UserAPI(base_url).login(username, password)
