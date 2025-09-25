@@ -1,4 +1,5 @@
-const API_URL = "http://localhost:8000"
+// const API_URL = "http://localhost:8000" this is for runing on the local maching 
+const API_URL = "http://app-backend:8000"; // this is for make it work on jenkins virtual container 
 
 export async function api(path, method = 'GET', body = null, token = null) {
   const headers = { 'Content-Type': 'application/json' }
