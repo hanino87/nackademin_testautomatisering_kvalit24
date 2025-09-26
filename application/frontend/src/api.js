@@ -1,5 +1,7 @@
 // const API_URL = "http://localhost:8000" this is for runing on the local maching 
-const API_URL = "http://app-backend:8000"; // this is for make it work on jenkins virtual container 
+
+const API_URL = import.meta.env.VITE_BASE_URL_BACKEND || "http://localhost:8000";
+export default API_URL;
 
 export async function api(path, method = 'GET', body = null, token = null) {
   const headers = { 'Content-Type': 'application/json' }
