@@ -3,7 +3,6 @@ import os
 from dotenv import load_dotenv
 from models.api.user import UserAPI
 import requests
-import pytest
 # Load .env once
 dotenv_path = os.path.join(os.path.dirname(__file__), "../.env")
 load_dotenv(dotenv_path=dotenv_path)
@@ -37,10 +36,6 @@ def ensure_admin_exists():
 # Environment getters
 # ----------------------------
 
-@pytest.fixture(scope="function", autouse=True)
-def inject_backend_url(page):
-    backend_url = os.environ.get("BASE_URL_BACKEND", "http://app-backend:8000")
-    page.add_init_script(f"window.__BASE_URL_BACKEND__ = '{backend_url}';")
 
 def get_backend_url():
     url = os.getenv("BASE_URL_BACKEND")
