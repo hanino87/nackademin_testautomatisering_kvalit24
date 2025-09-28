@@ -6,6 +6,6 @@ export default defineConfig({
   server: {
     host: true,
     port: 5173,
-    allowedHosts: ['app-frontend', 'localhost'] // ✅ allow both local + Jenkins
+    allowedHosts: ['app-frontend', 'localhost'] // ✅ allow both local + Jenkins this makes jenkins to accept app-frontend vite dont get 403 not allowed 
   }
 })
