@@ -1,5 +1,5 @@
 from playwright.sync_api import Page, expect
-from test.test_config import login_as_admin, ensure_laptop_in_store
+from test.test_config import login_as_admin
 
 # -------------------------------------------------------
 # Admin E2E tests 
@@ -7,14 +7,14 @@ from test.test_config import login_as_admin, ensure_laptop_in_store
   
 def test_add_product_to_catalog(page: Page):
     """Verify that admin can add a product"""
-    home_page, admin_page = login_as_admin,ensure_laptop_in_store(page)
+    home_page, admin_page = login_as_admin(page)
     admin_page.create_product("fish")
 
     fish_locator = admin_page.page.locator(".product-grid span", has_text="fish")
     expect(fish_locator).to_be_visible()
 
     total_products = len(admin_page.get_current_product_count())
-    assert total_products == 2, f"Expected 2 products, got {total_products}"
+    assert total_products == 1, f"Expected 1 products, got {total_products}"
     print("✅ Product added. Total products:", total_products)
 
 def test_remove_product_from_catalog(page: Page):
