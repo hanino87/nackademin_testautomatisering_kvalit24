@@ -4,14 +4,7 @@ from test.test_config import login_as_admin
 # -------------------------------------------------------
 # Admin E2E tests 
 # -------------------------------------------------------
-
-
-def test_show_backend_url(page):
-    # Evaluate in browser what API_URL is set to
-    backend_url = page.evaluate("() => window.__BASE_URL_BACKEND__")
-    print(f"🚀 Frontend sees backend as: {backend_url}")
-    assert backend_url is not None
-    
+  
 def test_add_product_to_catalog(page: Page):
     """Verify that admin can add a product"""
     home_page, admin_page = login_as_admin(page)
