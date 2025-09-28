@@ -35,6 +35,6 @@ def test_login_and_get_user_products():
     product_names = [p.get("name") for p in products if isinstance(p, dict)]
     assert "apple" not in product_names, "Expected 'apple' not in product list"
     if not product_names:
-        print("✅ Product list is empty as expected")
+        print("✅ Product list is empty as expected no apple is here in the list beacuse the list is empty")
     else:
         print(f"✅ Product list contains: {product_names}")

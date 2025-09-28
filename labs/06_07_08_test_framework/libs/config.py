@@ -8,6 +8,10 @@ dotenv_path = os.path.join(os.path.dirname(__file__), "../.env")
 load_dotenv(dotenv_path=dotenv_path)
 
 
+# ----------------------------
+# Prepare Database with user and products in store 
+# -----
+
 def ensure_admin_exists():
     """Ensure the first user (admin) exists.
     If DB is empty, /signup will create the admin.
@@ -30,8 +34,33 @@ def ensure_admin_exists():
     else:
         print(f"⚠️ Unexpected response {resp.status_code}: {resp.text}")
         resp.raise_for_status()
+        
 
+def ensure_laptop_in_store():
+    """Ensure the first product (laptop) exists.
+    If DB is empty, admin will through /post create the first product.
+    If the product already exists, backend should return 400/409 and we ignore it.
+    """
+    
+    ensure_admin_exists()
+    token=login_as_admin()
+    
+    base_url = get_backend_url()
+    product_data = {"name": "Laptop"}
 
+    resp = requests.post(
+        f"{base_url}/product",
+        json=product_data,
+        headers={"Authorization": f"Bearer {token}"}
+    )
+    if resp.status_code == 201:
+        print("✅ Laptop created successfully.")
+    elif resp.status_code in (400, 409):
+        print("ℹ️ Laptop already exists.")
+    else:
+        print(f"⚠️ Unexpected response {resp.status_code}: {resp.text}")
+        resp.raise_for_status()
+    
 # ----------------------------
 # Environment getters
 # ----------------------------
