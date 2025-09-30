@@ -24,3 +24,9 @@ Useful documentation:  https://playwright.dev/python/docs/docker
 Command to check local IP in windows:  `ipconfig`
 
 export an environment variable `export APP_FRONT_URL=http://???`
+
+docker run --rm   --network infrahannes_default   -e APP_FRONT_URL=http://infrahannes-app-frontend-1/   test_pw
+
+# i build an own network so i dont colide with infra network for the oter labs. 
+
+docker run --rm   --network infrahannes_default   -e APP_FRONT_URL=http://infrahannes-app-frontend-1/   test_pw
