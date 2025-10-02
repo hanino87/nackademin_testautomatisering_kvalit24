@@ -25,8 +25,16 @@ Command to check local IP in windows:  `ipconfig`
 
 export an environment variable `export APP_FRONT_URL=http://???`
 
-docker run --rm   --network infrahannes_default   -e APP_FRONT_URL=http://infrahannes-app-frontend-1/   test_pw
 
 # i build an own network so i dont colide with infra network for the oter labs. 
 
-docker run --rm   --network infrahannes_default   -e APP_FRONT_URL=http://infrahannes-app-frontend-1/   test_pw
+#  rm - take away container as soon you run the container 
+
+# --network infrahannes_default name of the network infra folder wuth compose file 
+
+# -e (export) env variabel and value is app-frontend beacuse service name is that in the compose file 
+
+# test_pw the image to run the container from 
+
+
+docker run --rm  --network infrahannes_default   -e APP_FRONT_URL=http://-app-frontend/   test_pw
