@@ -59,6 +59,27 @@ def ensure_user_exists(user_id: int = 1):
         print(f"⚠️ Unexpected response {resp.status_code}: {resp.text}")
         resp.raise_for_status()
 
+
+
+def ensure_product_exists(page, product_name: str = "fish"):
+    """Ensure a product exists in the UI.
+    If not present, create it as admin before tests.
+    """
+    # Login as admin
+    home_page, admin_page = login_as_admin(page=page)
+
+    # Check existing products
+    existing_products = admin_page.get_current_product_count()
+    if product_name in existing_products:
+        print(f"ℹ️ Product '{product_name}' already exists, continuing...")
+        return admin_page, home_page
+
+    # Otherwise, create product
+    admin_page.create_product(product_name)
+    print(f"✅ Product '{product_name}' created successfully.")
+
+    return admin_page, home_page
+
 # ----------------------------
 # Environment getters
 # ----------------------------
