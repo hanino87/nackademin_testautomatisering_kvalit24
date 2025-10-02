@@ -8,6 +8,9 @@ import requests
 dotenv_path = os.path.join(os.path.dirname(__file__), "../.env")
 load_dotenv(dotenv_path=dotenv_path)
 
+# ----------------------------
+# Prepare that Testdata User is before test 
+# ----------------------------
 
 def ensure_admin_exists():
     """Ensure the first user (admin) exists.
@@ -32,6 +35,29 @@ def ensure_admin_exists():
         print(f"⚠️ Unexpected response {resp.status_code}: {resp.text}")
         resp.raise_for_status()
 
+
+def ensure_user_exists(user_id: int = 1):
+    """Ensure a given user exists.
+    If DB only has admin, /signup will create this user.
+    If user already exists, backend should return 400/409 and we ignore it.
+    """
+    base_url = get_backend_url()
+    username, password = get_user_credentials(user_id=user_id)
+
+    print(f"Ensuring {username} (user_id={user_id}) exists via {base_url}/signup ...")
+
+    resp = requests.post(
+        f"{base_url}/signup",
+        json={"username": username, "password": password}
+    )
+
+    if resp.status_code == 201:
+        print(f"✅ {username} created successfully.")
+    elif resp.status_code in (400, 409):
+        print(f"ℹ️ {username} already exists, continuing...")
+    else:
+        print(f"⚠️ Unexpected response {resp.status_code}: {resp.text}")
+        resp.raise_for_status()
 
 # ----------------------------
 # Environment getters
@@ -102,12 +128,17 @@ def login_as_admin(page=None):
 
 def login_as_user(page=None, user_id: int = 1):
     """Login as user; return UserAPI or page objects if page is passed"""
+    
+    # Make sure user exists before attempting login do that before login in that order 
+    ensure_user_exists(user_id)
+    
     username, password = get_user_credentials(user_id)
     base_url = get_backend_url()
+    
     token = UserAPI(base_url).login(username, password)
     if not token:
         raise ValueError(f"User{user_id} login failed, no token returned")
-
+    # If a Playwright page is provided, inject token and return UI objects
     if page:
         from models.ui.home import HomePage
         from models.ui.user import UserPage
