@@ -54,10 +54,28 @@ def test_signup_and_login_user(page):
 # -------------------------------------------------------
 
  
-# def test_user_with_products(page):
-#     """Login and verify the product list has a laptop for a user with products"""
-#     user_page, _ = login_as_user(page, user_id=2)
-#     products = user_page.get_user_products()
-#     assert len(products) > 0
-#     assert any("laptop" == p.lower().strip() for p in products), "Laptop not found in product list."
-#     print("✅ Products for USER2:", products)
+def test_user_with_products(page):
+    """Login and verify the product list has a laptop for a user with products"""
+    user_page, _ = login_as_user(page, user_id=2,)
+    user_page.add_product_to_user()
+    laptop_locator = page.locator("#root div div div div", has_text="Laptop")
+    expect(laptop_locator).to_be_visible()
+    
+    if laptop_locator.is_visible():
+        print("✅ Laptop is visible in the product list")
+    else:
+          print("⚠️ Laptop is NOT visible in the product list we raise a bug to the developer")
+
+    # Ta bort produkten
+    user_page.remove_product_from_user()
+    expect(laptop_locator).to_be_hidden()
+
+    # Kolla igen efter borttagning
+    if laptop_locator.is_visible():
+      print("⚠️ Laptop is still visible after removal")
+    else:
+        print("✅ Laptop is now hidden after removal")
+        
+    
+
+   

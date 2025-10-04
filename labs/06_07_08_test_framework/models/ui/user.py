@@ -6,9 +6,16 @@ class UserPage:
         self.header_title = page.get_by_text("Nackademin Course App")
         self.welcome_message_with_username = page.get_by_text(f"Welcome, {username}", exact=False) # false to make if work in 
         self.user_header_products_title_with_products = page.get_by_text("Your Products:") # but this is dangerous if there are same texts on the page somewhere 
-        self.user_header_products_title_with_products = page.get_by_text("No products assigned") # but this is dangerous if there are same texts on the page somewhere 
-        self.button_logout = page.get_by_role("button", name="Logout")
-        self.grid_locator = page.locator("#root > div > div") 
+        self.user_header_products_title_with_products = page.get_by_text("No products assigned.") # but this is dangerous if there are same texts on the page somewhere 
+        self.btn_logout = page.get_by_role("button", name="Logout")
+        self.grid_locator = page.locator("#root > div > div")
+        self.btn_add_product = page.get_by_role("button", name="Add Product")
+        self.txt_product=page.get_by_text("Your Products:")
+        self.btn_add_in_popup_window=page.get_by_role("button", name="Add", exact=True)
+        self.btn_close=page.get_by_role("button", name="Close")
+        self.txt_no_products=page.get_by_text("No more products available.")
+        self.btn_delete=page.get_by_role("button", name="Delete")
+        self.customers_product_list=page.locator("#root div div div div") #has_text="Laptop")
         #page_(element-type)_(descriptive-name)
        
     def get_user_products(self):
@@ -34,8 +41,11 @@ class UserPage:
         self.button_logout.click()
         
 
-    def add_product_to_end(self, product_name): # Misses in frontend ui-mode 
-        pass
+    def add_product_to_user(self): # Misses in frontend ui-mode 
+        self.btn_add_product.click()
+        self.btn_add_in_popup_window.click()
+        self.btn_close.click()
+        
 
-    def remove_product_from_user(self, product_name):# Misses in frontend ui-mode 
-        pass
+    def remove_product_from_user(self):# Misses in frontend ui-mode 
+        self.btn_delete.click()

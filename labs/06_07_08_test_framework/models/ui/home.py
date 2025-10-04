@@ -28,6 +28,7 @@ class HomePage:
         self.login_input_username.fill(username)
         self.login_input_password.fill(password)
         self.login_btn_login.click()
+        
         """" Metod to go to singup page from homepage"""
     def go_to_signup(self):
         self.login_btn_signup.click()
