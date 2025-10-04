@@ -35,7 +35,7 @@ class AdminPage:
     def create_product(self,product_name:str):
         """Metod for create a product and fill in product name"""
         self.product_name_input.wait_for(state="attached")
-        self.product_name_input.fill("fish")
+        self.product_name_input.fill(product_name)
         self.create_product_btn.click()
         self.page.locator(".product-grid > .product-item > span", has_text=product_name).wait_for(state="visible")
     
