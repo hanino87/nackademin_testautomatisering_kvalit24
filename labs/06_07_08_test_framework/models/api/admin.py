@@ -28,7 +28,7 @@ class AdminAPI():
         """Create a new product in the catalog."""
         headers = {"Authorization": f"Bearer {self.token}"}
         body = {"name": product_name}
-        response = requests.post(f"{self.base_url}/products", json=body, headers=headers)
+        response = requests.post(f"{self.base_url}/product", json=body, headers=headers)
         return response
     
     def search_product_id(self, product_name:str):
