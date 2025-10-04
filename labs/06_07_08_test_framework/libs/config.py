@@ -61,7 +61,7 @@ def ensure_user_exists(user_id: int = 1):
 
 
 
-def ensure_product_exists(page, product_name: str = "fish"):
+def ensure_product_exists(page, product_name: str = "laptop"):
     """Ensure a product exists in the UI.
     If not present, create it as admin before tests.
     """
@@ -79,6 +79,8 @@ def ensure_product_exists(page, product_name: str = "fish"):
     print(f"✅ Product '{product_name}' created successfully.")
 
     return admin_page, home_page
+
+
 
 # ----------------------------
 # Environment getters
@@ -102,11 +104,11 @@ def get_admin_credentials():
         raise ValueError("ADMIN_USERNAME / ADMIN_PASSWORD not found")
     return username, password
 
-def get_user_credentials(user_id: int = 1):
-    if user_id == 1:
+def get_user_credentials(user_id: int):
+    if user_id == 2:
         username = os.getenv("USERNAME1")
         password = os.getenv("PASSWORD1")
-    elif user_id == 2:
+    elif user_id == 3:
         username = os.getenv("USERNAME2")
         password = os.getenv("PASSWORD2")
     else:
@@ -149,16 +151,19 @@ def login_as_admin(page=None):
 
 def login_as_user(page=None, user_id: int = 1):
     """Login as user; return UserAPI or page objects if page is passed"""
-    
-    # Make sure user exists before attempting login do that before login in that order 
-    ensure_user_exists(user_id)
-    
+
+    # Make sure users 2 and 3 exist before any login
+    for uid in (2,3):
+        ensure_user_exists(user_id=uid)
+
+    # Then continue with login for whichever user_id is requested
     username, password = get_user_credentials(user_id)
     base_url = get_backend_url()
-    
+
     token = UserAPI(base_url).login(username, password)
     if not token:
-        raise ValueError(f"User{user_id} login failed, no token returned")
+        raise ValueError(f"User {user_id} login failed, no token returned")
+
     # If a Playwright page is provided, inject token and return UI objects
     if page:
         from models.ui.home import HomePage
@@ -169,5 +174,3 @@ def login_as_user(page=None, user_id: int = 1):
         return UserPage(page, username), home_page
 
     return UserAPI(base_url, token=token)
-
-

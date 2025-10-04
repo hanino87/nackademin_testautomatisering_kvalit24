@@ -6,4 +6,5 @@ from libs.config import (
     get_user_credentials,
     login_as_admin,
     login_as_user,
+    ensure_product_exists
 )
