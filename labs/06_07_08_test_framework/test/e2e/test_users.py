@@ -38,14 +38,21 @@ def test_signup_and_login_user(page):
     signup.signup(username, password)
     page.wait_for_load_state("networkidle")
     signup.go_to_home()
+    print(f"✅ User signed up via UI: {username} {password}")
 
     home.login(username, password)
-    print(f"✅ User signed up via UI: {username} {password}")
+    print(f"✅ User logged in via UI: {username} {password}")
 
     user = UserPage(page, username)
 
     # Explicitly wait for the welcome message to be visible
     user.welcome_message_with_username.wait_for(state="visible", timeout=10000)
+    
+    # debug picture to see what happens in the test when it fails in Jenkins 
+    
+    page.screenshot(path="login_state.png")
+    print(page.content())
+    
 
     # Now perform the assertions
     expect(user.welcome_message_with_username).to_be_visible()
