@@ -66,7 +66,7 @@ def test_signup_and_login_user(page):
     # 3️⃣ Perform login
     try:
         # Wait for login button to be enabled
-        home.login_button.wait_for(state="enabled", timeout=10000)
+        home.login_btn_login.wait_for(state="enabled", timeout=10000)
 
         home.login(username, password)
         page.wait_for_load_state("networkidle")
