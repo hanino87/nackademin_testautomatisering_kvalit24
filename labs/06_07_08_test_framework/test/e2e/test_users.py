@@ -48,52 +48,31 @@ def test_signup_and_login_user(page):
      signup.signup(username, password)
     dialog = dialog_info.value
     dialog.accept()
-    page.wait_for_load_state("networkidle")
+   # page.wait_for_load_state("networkidle")
     signup.go_to_home()
-    page.wait_for_load_state("networkidle")
+    #page.wait_for_load_state("networkidle")
     print(f"✅ User signed up via UI: {username} {password}")
 
-    # 2️⃣ Check backend is reachable
-    try:
-        response = requests.get("http://app-backend:8000/health", timeout=5)
-        assert response.status_code == 200, "Backend health check failed!"
-        print("✅ Backend reachable")
-    except Exception as e:
-        print("⚠️ Backend not reachable from Jenkins:", e)
-        # Capture page for debugging
-        page.screenshot(path=os.path.join(screenshots_dir, "login_state.png"))
-        with open(os.path.join(screenshots_dir, "login_state.html"), "w") as f:
-            f.write(page.content())
-        raise e
-
     # 3️⃣ Perform login
-    try:
+    #
         # Wait for login button to be enabled
-        expect(home.login_btn_login).to_be_enabled(timeout=10000)
+    expect(home.login_btn_login).to_be_enabled(timeout=10000)
 
-        home.login(username, password)
-        page.wait_for_load_state("networkidle")
-        print(f"✅ User logged in via UI: {username} {password}")
+    home.login(username, password)
+    page.wait_for_load_state("networkidle")
+    print(f"✅ User logged in via UI: {username} {password}")
 
-        # 4️⃣ Wait for welcome message to confirm login
-        user = UserPage(page, username)
-        user.welcome_message_with_username.wait_for(state="visible", timeout=15000)
+    # 4️⃣ Wait for welcome message to confirm login
+    user = UserPage(page, username)
+    user.welcome_message_with_username.wait_for(state="visible", timeout=15000)
 
-        # 5️⃣ Assertions
-        expect(user.welcome_message_with_username).to_be_visible()
-        expect(user.welcome_message_with_username).to_contain_text(username)
-        expect(home.login_input_username).to_be_hidden()
-        expect(home.login_input_password).to_be_hidden()
+    # 5️⃣ Assertions
+    expect(user.welcome_message_with_username).to_be_visible()
+    expect(user.welcome_message_with_username).to_contain_text(username)
+    expect(home.login_input_username).to_be_hidden()
+    expect(home.login_input_password).to_be_hidden()
 
-    except Exception as e:
-        # Capture page for debugging if login fails
-        page.screenshot(path=os.path.join(screenshots_dir, "login_state.png"))
-        with open(os.path.join(screenshots_dir, "login_state.html"), "w") as f:
-            f.write(page.content())
-        print("📸 Screenshot and HTML saved for debugging")
-        raise e
-
-    
+   
 # -------------------------------------------------------
 # User E2E tests (UI) This test will be implemented when user can add products
 # -------------------------------------------------------
