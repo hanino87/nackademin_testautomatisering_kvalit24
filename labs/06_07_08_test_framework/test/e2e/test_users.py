@@ -39,9 +39,12 @@ def test_signup_and_login_user(page):
     page.wait_for_load_state("networkidle")
     signup.go_to_home()
     print(f"✅ User signed up via UI: {username} {password}")
+    page.wait_for_load_state("networkidle")
 
     home.login(username, password)
     print(f"✅ User logged in via UI: {username} {password}")
+    page.wait_for_load_state("networkidle")
+    print(page.content()) 
 
     # user = UserPage(page, username)
 
