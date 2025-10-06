@@ -43,16 +43,16 @@ def test_signup_and_login_user(page):
     home.login(username, password)
     print(f"✅ User logged in via UI: {username} {password}")
 
-    user = UserPage(page, username)
+    # user = UserPage(page, username)
 
-    # Explicitly wait for the welcome message to be visible
-    user.welcome_message_with_username.wait_for(state="visible", timeout=10000)
+    # # Explicitly wait for the welcome message to be visible
+    # user.welcome_message_with_username.wait_for(state="visible", timeout=10000)
     
     # debug picture to see what happens in the test when it fails in Jenkins 
     
     # Take a screenshot for debugging in Jenkins 
-    page.screenshot(path="/var/jenkins_home/workspace/screenshots/login_state.png")
-    print("📸 Screenshot saved for debugging")
+   # page.screenshot(path="/var/jenkins_home/workspace/screenshots/login_state.png")
+    #print("📸 Screenshot saved for debugging")
 
     user = UserPage(page, username)
     user.welcome_message_with_username.wait_for(state="visible", timeout=10000)
