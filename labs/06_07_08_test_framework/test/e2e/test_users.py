@@ -44,6 +44,10 @@ def test_signup_and_login_user(page):
 
     user = UserPage(page, username)
 
+    # Explicitly wait for the welcome message to be visible
+    user.welcome_message_with_username.wait_for(state="visible", timeout=10000)
+
+    # Now perform the assertions
     expect(user.welcome_message_with_username).to_be_visible()
     expect(user.welcome_message_with_username).to_contain_text(username)
     expect(home.login_input_username).to_be_hidden()
