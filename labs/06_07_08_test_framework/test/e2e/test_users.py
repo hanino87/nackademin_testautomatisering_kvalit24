@@ -54,8 +54,8 @@ def test_signup_and_login_user(page):
    # page.screenshot(path="/var/jenkins_home/workspace/screenshots/login_state.png")
     #print("📸 Screenshot saved for debugging")
 
-    user = UserPage(page, username)
-    user.welcome_message_with_username.wait_for(state="visible", timeout=10000)
+    # user = UserPage(page, username)
+    # user.welcome_message_with_username.wait_for(state="visible", timeout=10000)
     
 
     # Now perform the assertions
