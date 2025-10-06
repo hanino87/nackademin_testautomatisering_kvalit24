@@ -32,7 +32,7 @@ def test_signup_and_login_user(page):
     password = libs.utils.generate_password_with_prefix()
 
     # Accept any JS dialogs
-    page.on("dialog", lambda d: d.accept())
+    #page.on("dialog", lambda d: d.accept())
 
     home = HomePage(page)
     signup = SignupPage(page)
