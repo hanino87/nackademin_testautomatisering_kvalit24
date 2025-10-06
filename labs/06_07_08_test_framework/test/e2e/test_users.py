@@ -2,7 +2,8 @@ from playwright.sync_api import expect
 from models.ui.home import HomePage
 from models.ui.signup import SignupPage
 from models.ui.user import UserPage
-
+import os
+import requests
 import libs.utils
 from test.test_config import login_as_user
 
@@ -24,48 +25,71 @@ def test_user_with_no_products(page):
     print("✅ Products for USER1 as you can see it has no products:", products)
 
 
+
+
 def test_signup_and_login_user(page):
     username = libs.utils.generate_string_with_prefix()
     password = libs.utils.generate_password_with_prefix()
 
+    # Accept any JS dialogs
     page.on("dialog", lambda d: d.accept())
 
     home = HomePage(page)
     signup = SignupPage(page)
 
+    # Ensure screenshots folder exists
+    screenshots_dir = "/var/jenkins_home/workspace/screenshots"
+    os.makedirs(screenshots_dir, exist_ok=True)
+
+    # 1️⃣ Navigate to signup and create user
     home.navigate()
     home.go_to_signup()
     signup.signup(username, password)
     page.wait_for_load_state("networkidle")
     signup.go_to_home()
+    page.wait_for_load_state("networkidle")
     print(f"✅ User signed up via UI: {username} {password}")
-    page.wait_for_load_state("networkidle")
 
-    home.login(username, password)
-    print(f"✅ User logged in via UI: {username} {password}")
-    page.wait_for_load_state("networkidle")
-    print(page.content()) 
+    # 2️⃣ Check backend is reachable
+    try:
+        response = requests.get("http://app-backend:8000/health", timeout=5)
+        assert response.status_code == 200, "Backend health check failed!"
+        print("✅ Backend reachable")
+    except Exception as e:
+        print("⚠️ Backend not reachable from Jenkins:", e)
+        # Capture page for debugging
+        page.screenshot(path=os.path.join(screenshots_dir, "login_state.png"))
+        with open(os.path.join(screenshots_dir, "login_state.html"), "w") as f:
+            f.write(page.content())
+        raise e
 
-    # user = UserPage(page, username)
+    # 3️⃣ Perform login
+    try:
+        # Wait for login button to be enabled
+        home.login_button.wait_for(state="enabled", timeout=10000)
 
-    # # Explicitly wait for the welcome message to be visible
-    # user.welcome_message_with_username.wait_for(state="visible", timeout=10000)
-    
-    # debug picture to see what happens in the test when it fails in Jenkins 
-    
-    # Take a screenshot for debugging in Jenkins 
-   # page.screenshot(path="/var/jenkins_home/workspace/screenshots/login_state.png")
-    #print("📸 Screenshot saved for debugging")
+        home.login(username, password)
+        page.wait_for_load_state("networkidle")
+        print(f"✅ User logged in via UI: {username} {password}")
 
-    # user = UserPage(page, username)
-    # user.welcome_message_with_username.wait_for(state="visible", timeout=10000)
-    
+        # 4️⃣ Wait for welcome message to confirm login
+        user = UserPage(page, username)
+        user.welcome_message_with_username.wait_for(state="visible", timeout=15000)
 
-    # Now perform the assertions
-    # expect(user.welcome_message_with_username).to_be_visible()
-    # expect(user.welcome_message_with_username).to_contain_text(username)
-    expect(home.login_input_username).to_be_hidden()
-    expect(home.login_input_password).to_be_hidden()
+        # 5️⃣ Assertions
+        expect(user.welcome_message_with_username).to_be_visible()
+        expect(user.welcome_message_with_username).to_contain_text(username)
+        expect(home.login_input_username).to_be_hidden()
+        expect(home.login_input_password).to_be_hidden()
+
+    except Exception as e:
+        # Capture page for debugging if login fails
+        page.screenshot(path=os.path.join(screenshots_dir, "login_state.png"))
+        with open(os.path.join(screenshots_dir, "login_state.html"), "w") as f:
+            f.write(page.content())
+        print("📸 Screenshot and HTML saved for debugging")
+        raise e
+
     
 # -------------------------------------------------------
 # User E2E tests (UI) This test will be implemented when user can add products
