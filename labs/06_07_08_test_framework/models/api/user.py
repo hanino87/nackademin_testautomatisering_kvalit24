@@ -1,7 +1,7 @@
 # View where an user (non admin) can Choose
 # produts from the Product Catalog and/or
 # remove it
-import os
+
 import requests
 
 
