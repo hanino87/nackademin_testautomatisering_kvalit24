@@ -44,7 +44,10 @@ def test_signup_and_login_user(page):
     # 1️⃣ Navigate to signup and create user
     home.navigate()
     home.go_to_signup()
-    signup.signup(username, password)
+    with page.expect_event("dialog") as dialog_info:
+     signup.signup(username, password)
+    dialog = dialog_info.value
+    dialog.accept()
     page.wait_for_load_state("networkidle")
     signup.go_to_home()
     page.wait_for_load_state("networkidle")
