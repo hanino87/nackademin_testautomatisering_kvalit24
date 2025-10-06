@@ -50,8 +50,12 @@ def test_signup_and_login_user(page):
     
     # debug picture to see what happens in the test when it fails in Jenkins 
     
-    page.screenshot(path="login_state.png")
-    print(page.content())
+    # Take a screenshot for debugging in Jenkins 
+    page.screenshot(path="/var/jenkins_home/workspace/screenshots/login_state.png")
+    print("📸 Screenshot saved for debugging")
+
+    user = UserPage(page, username)
+    user.welcome_message_with_username.wait_for(state="visible", timeout=10000)
     
 
     # Now perform the assertions
